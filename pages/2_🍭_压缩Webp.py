@@ -19,6 +19,20 @@ from koko_learn.PicTools import compress_webp
 from koko_learn.PicTools import compress_cover
 
 
+def get_compress_info(path_src,path_dst):
+    import pandas as pd
+
+    files = os.listdir(path_src)
+    size_list = []
+    for file in files:
+        if os.path.isdir(os.path.join(path_src, file)):
+            continue
+        old_size = os.path.getsize(f'{path_src}/{file}')
+        new_size = os.path.getsize(f'{path_dst}/{file.split(".")[0]}.webp')
+        size_list.append([file, old_size, new_size, new_size / old_size])
+    info = pd.DataFrame(size_list, columns=['FILE', 'MEM_OLD', 'MEM_NEW', 'RATE'])
+    return info
+
 def page_init():
     st.set_page_config(
         page_title="图片压缩WebP",
@@ -68,15 +82,16 @@ def page_main_1():
                 os.mkdir(img_dst)
 
             with st.spinner('等待进程...'):
-                info = compress_webp(img_src,
+                compress_webp(img_src,
                                      img_dst,
                                      limit_size=eval(limit_size),
                                      limit_width=eval(limit_width),
                                      max_workers=eval(max_workers)
                                      )
                 st.success('压缩完成！')
-                with st.expander("压缩信息"):
-                    st.write(info)
+            info = get_compress_info(img_src, img_dst)
+            with st.expander("压缩信息"):
+                st.write(info)
     st.markdown('### 实现说明')
     st.markdown('根据指定宽度和大小将图片压缩为`webp`格式(基于`cwebp`)')
 
