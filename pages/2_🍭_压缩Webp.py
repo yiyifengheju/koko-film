@@ -15,11 +15,11 @@ import os
 import streamlit as st
 from config import INIT
 
-from koko_learn.PicTools import compress_webp
 from koko_learn.PicTools import compress_cover
+from koko_learn.PicTools import compress_webp
 
 
-def get_compress_info(path_src,path_dst):
+def get_compress_info(path_src, path_dst, pre):
     import pandas as pd
 
     files = os.listdir(path_src)
@@ -29,9 +29,11 @@ def get_compress_info(path_src,path_dst):
             continue
         old_size = os.path.getsize(f'{path_src}/{file}')
         new_size = os.path.getsize(f'{path_dst}/{file.split(".")[0]}.webp')
+        os.rename(f'{path_dst}/{file.split(".")[0]}.webp', f'{path_dst}/{pre}-{file.split(".")[0]}.webp')
         size_list.append([file, old_size, new_size, new_size / old_size])
     info = pd.DataFrame(size_list, columns=['FILE', 'MEM_OLD', 'MEM_NEW', 'RATE'])
     return info
+
 
 def page_init():
     st.set_page_config(
@@ -51,7 +53,7 @@ def page_init():
 
 def page_main_1():
     st.markdown('### 图片压缩')
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         limit_size = st.text_input('限制大小/kb',
                                    key='limit_size',
@@ -68,6 +70,11 @@ def page_main_1():
                                    index=0,
                                    key='max_workers'
                                    )
+    with col4:
+        rename_pre = st.text_input('重命名',
+                                   key='rename_pre',
+                                   value=''
+                                   )
 
     img_src = st.text_input('IMG_SRC',
                             key='img_src'
@@ -83,13 +90,13 @@ def page_main_1():
 
             with st.spinner('等待进程...'):
                 compress_webp(img_src,
-                                     img_dst,
-                                     limit_size=eval(limit_size),
-                                     limit_width=eval(limit_width),
-                                     max_workers=eval(max_workers)
-                                     )
+                              img_dst,
+                              limit_size=eval(limit_size),
+                              limit_width=eval(limit_width),
+                              max_workers=eval(max_workers)
+                              )
                 st.success('压缩完成！')
-            info = get_compress_info(img_src, img_dst)
+            info = get_compress_info(img_src, img_dst, rename_pre)
             with st.expander("压缩信息"):
                 st.write(info)
     st.markdown('### 实现说明')
