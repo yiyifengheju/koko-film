@@ -34,6 +34,18 @@ def page_init():
     st.title('👺Auto-MkDocs')
     st.caption(INIT.AUTHOR)
 
+def compress_rename(img_src,limit_width,max_workers):
+    am = AutoMkdocs(path_src=img_src,
+                    limit_size=50,
+                    limit_width=int(limit_width),
+                    max_workers=int(max_workers)
+                    )
+    am.run(is_auto=False)
+    files = os.listdir(am.path_src)
+    for file in files:
+        os.rename(f'{am.path_dst}/{file.split(".")[0]}.webp',
+                  f'{am.path_dst}/low-{file.split(".")[0]}.webp')
+
 
 def page_main():
     col1, col3, col2 = st.columns((4.5, 1, 4.5))
@@ -82,7 +94,9 @@ def page_main():
                                                      max_workers=int(max_workers)
                                                      )
                 if if_compress:
+                    compress_rename(img_src,limit_width,max_workers)
                     st.session_state.am.run(is_auto=False)
+
                     st.success('👺 自动化流程结束！')
                     with st.expander("压缩信息"):
                         info = st.session_state.am.compress_res

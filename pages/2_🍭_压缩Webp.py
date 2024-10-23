@@ -29,7 +29,7 @@ def get_compress_info(path_src, path_dst, pre):
             continue
         old_size = os.path.getsize(f'{path_src}/{file}')
         new_size = os.path.getsize(f'{path_dst}/{file.split(".")[0]}.webp')
-        os.rename(f'{path_dst}/{file.split(".")[0]}.webp', f'{path_dst}/{pre}-{file.split(".")[0]}.webp')
+        os.rename(f'{path_dst}/{file.split(".")[0]}.webp', f'{path_dst}/{pre}{"-" if pre else ""}{file.split(".")[0]}.webp')
         size_list.append([file, old_size, new_size, new_size / old_size])
     info = pd.DataFrame(size_list, columns=['FILE', 'MEM_OLD', 'MEM_NEW', 'RATE'])
     return info
