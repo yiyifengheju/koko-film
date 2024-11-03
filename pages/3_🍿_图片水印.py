@@ -49,7 +49,7 @@ def page_main():
                                     )
     with col3:
         style_idx = st.selectbox("水印样式",
-                                 ('0', '1', '2', '3'),
+                                 ('MARK_0', 'MARK_1', 'MARK_2', 'MARK_3', 'MARK_4'),
                                  index=1,
                                  key='style_idx'
                                  )
