@@ -21,7 +21,7 @@ except ImportError:
     from utils.page_init import page_init, page_md
 
 
-from PicTools import raf_renamer
+from koko_pictools import raf_renamer
 
 
 def page_main():

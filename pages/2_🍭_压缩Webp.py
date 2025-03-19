@@ -24,7 +24,7 @@ except ImportError:
     from utils.page_init import page_init, page_md
 
 
-from PicTools import compress_cover, compress_webp
+from koko_pictools import compress_cover, compress_webp
 
 
 def get_compress_info(path_src, path_dst, pre):

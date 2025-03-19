@@ -16,7 +16,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from PicTools import KokoWaterMark
+from koko_pictools import KokoWaterMark
 
 try:
     from ..config import INIT
