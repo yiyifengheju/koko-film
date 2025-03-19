@@ -6,11 +6,13 @@
 @Create by Author: 一一风和橘
 @Motto: "The trick, William Potter, is not minding that it hurts."
 @Description:
-- 
+-
 - 🍿
 =========================================================================
 """
+
 import shutil
+from pathlib import Path
 
 import streamlit as st
 import toml
@@ -26,53 +28,54 @@ def page_init():
         menu_items={
             # 'Get Help': 'https://www.extremelycoolapp.com/help',
             # 'Report a bug': "https://www.extremelycoolapp.com/bug",
-            'About': f"🔧系统设置 \n\n {INIT.AUTHOR}"
-        }
+            "About": f"🔧系统设置 \n\n {INIT.AUTHOR}",
+        },
     )
-    st.title('🔧系统设置')
+    st.title("🔧系统设置")
     st.caption(INIT.AUTHOR)
 
 
 def page_main():
     col1, col2, col3 = st.columns(3)
     with col1:
-        conf_theme = st.selectbox('显示模式',
-                                  ('DARK', 'LIGHT'),
-                                  key='conf_theme'
-                                  )
-        st.write('')
+        conf_theme = st.selectbox(
+            "显示模式",
+            ("DARK", "LIGHT"),
+            key="conf_theme",
+        )
+        st.write("")
 
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
-        if st.button('保存配置', key='btn_save_conf'):
+        if st.button("保存配置", key="btn_save_conf"):
             match INIT.SYSTEM:
-                case 'Windows':
+                case "Windows":
                     conf_dict = {
-                        'THEME': conf_theme
+                        "THEME": conf_theme,
                     }
-                case 'Linux':
+                case "Linux":
                     conf_dict = {
-                        'THEME': conf_theme
+                        "THEME": conf_theme,
                     }
                 case _:
                     assert 0
 
-            with open(f'./config.toml', 'w', encoding='utf-8') as f:
+            with Path("./config.toml").open("w", encoding="utf-8") as f:
                 toml.dump(conf_dict, f)
 
-            streamlit_config = toml.load('./.streamlit/config.toml')
-            streamlit_config['theme']['base'] = conf_theme.lower()
-            with open(f'./.streamlit/config.toml', 'w', encoding='utf-8') as f:
+            streamlit_config = toml.load("./.streamlit/config.toml")
+            streamlit_config["theme"]["base"] = conf_theme.lower()
+            with Path("./.streamlit/config.toml").open("w", encoding="utf-8") as f:
                 toml.dump(streamlit_config, f)
             st.rerun()
 
     with col2:
-        if st.button('恢复默认', key='btn_default_conf'):
-            shutil.copy('./default.toml', './config.toml')
+        if st.button("恢复默认", key="btn_default_conf"):
+            shutil.copy("./default.toml", "./config.toml")
             st.rerun()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 页面配置
     page_init()
     # 页面功能
