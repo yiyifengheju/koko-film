@@ -1,0 +1,6 @@
+[theme]
+base = "dark"
+font = "serif"
+
+[server]
+port = 5678

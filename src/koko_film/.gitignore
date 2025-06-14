@@ -1,0 +1,11 @@
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+wheels/
+*.egg-info
+
+# venv
+.venv
+*.webp
+*.jpg
