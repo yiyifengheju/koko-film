@@ -14,37 +14,52 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-
+import subprocess
 import tqdm
 
 try:
-    from ..config import CONFIG
+    from raf_tools.config import BIN_CFG, APP_CFG
 except ImportError:
-    from config import CONFIG
+    from koko_film.koko_marker.config import BIN_CFG, APP_CFG
 
 
-def __run(file, path_src, path_dst, aim_model):
+bin_exiftool = Path(BIN_CFG.PATH_EXIFTOOL).absolute()
+
+def run_cmd(cmd, cwd):
+    try:
+        result = subprocess.check_output(
+            cmd,
+            shell=True,
+            cwd=cwd,
+            text=False,
+            encoding="utf-8",
+        )
+        return result.strip()
+    except subprocess.CalledProcessError as e:
+        print(e)
+
+def run(file, path_src, path_dst, aim_model):
     raf_path = Path(path_src, file).absolute()
     # fmt: off
     if aim_model:
-        cmd = (f'{CONFIG.PATH_EXIFTOOL} '
+        cmd = (f'{bin_exiftool} '
                f'"-Model={aim_model}" '
                # f'"-Software=Digital Camera {aim_model} Ver1.00" '
                f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/%Y%m%d_%%f.%%e" '
                f'"{raf_path}"')
     else:
-        cmd = (f'{CONFIG.PATH_EXIFTOOL} '
+        cmd = (f'{bin_exiftool} '
                f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/%Y%m%d_%%f.%%e" '
                f'"{raf_path}"')
     # fmt: on
-    os.popen(cmd)
+    run_cmd(cmd, './')
 
 
 def raf_renamer(
     path_src: str,
     path_dst: str,
     aim_model: str,
-    max_workers: int = CONFIG.MAX_WORKERS,
+    max_workers: int = APP_CFG.MAX_WORKERS,
 ) -> None:
     """RAF文件重命名和归档
 
@@ -64,7 +79,7 @@ def raf_renamer(
     None
 
     """
-    assert Path(CONFIG.PATH_EXIFTOOL).exists(), "exiftool.exe is not found"
+    assert Path(BIN_CFG.PATH_EXIFTOOL).exists(), "exiftool.exe is not found"
 
     if not Path(path_dst).exists():
         Path(path_dst).mkdir(parents=True, exist_ok=True)
@@ -73,13 +88,17 @@ def raf_renamer(
     t_file_list = tqdm.tqdm(files)
 
     with ThreadPoolExecutor(max_workers=max_workers) as t:
-        futures = [t.submit(__run, file, path_src, path_dst, aim_model) for file in files if file != "Desktop.ini"]
+        futures = [
+            t.submit(run, file, path_src, path_dst, aim_model)
+            for file in files
+            if file != "Desktop.ini"
+        ]
         for future in as_completed(futures):
             t_file_list.update(1)
             t_file_list.set_description(future.result())
 
 
 if __name__ == "__main__":
-    src = r"H:\桌面\未分类\xazq"
-    dst = r"H:\DAOCHU"
+    src = r"C:\Users\mastermao\Desktop\101_FUJI"
+    dst = r"C:\Users\mastermao\Desktop\RAF"
     raf_renamer(src, dst, aim_model="")

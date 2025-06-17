@@ -5,7 +5,15 @@ description = "Add your description here"
 authors = [
     { name = "mastermao", email = "wego_mao@hotmail.com" }
 ]
-dependencies = []
+dependencies = [
+    "tqdm>=4.67.1",
+    "toml>=0.10.2",
+    "pydantic>=2.11.7",
+    "exifread>=3.3.1",
+    "pandas>=2.3.0",
+    "pandas-stubs>=2.2.3.250527",
+    "pillow>=11.2.1",
+]
 readme = "README.md"
 requires-python = ">= 3.8"
 

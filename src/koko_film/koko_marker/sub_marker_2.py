@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_2.py
+@File Name: sub_marker_2.py
 @Time: 2025/6/10 00:46
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -39,7 +39,7 @@ class PARAM:
     txt_color = (255, 255, 255) if THEME == "dark" else (0, 0, 0)
 
 
-def _sub_marker_2(marker_exif: MarkerEXIF):
+def sub_marker_2(marker_exif: MarkerEXIF):
     img = generate_border(
         marker_exif.width,
         marker_exif.height,

@@ -23,21 +23,21 @@ import tqdm
 from PIL import Image
 
 try:
-    from koko_marker._marker_1 import _sub_marker_1
-    from koko_marker._marker_2 import _sub_marker_2
-    from koko_marker._marker_3 import _sub_marker_3
-    from koko_marker._marker_4 import _sub_marker_4
-    from koko_marker._marker_5 import _sub_marker_5
-    from koko_marker._marker_conan import _sub_marker_conan
+    from koko_marker.sub_marker_1 import sub_marker_1
+    from koko_marker.sub_marker_2 import sub_marker_2
+    from koko_marker.sub_marker_3 import sub_marker_3
+    from koko_marker.sub_marker_4 import sub_marker_4
+    from koko_marker.sub_marker_5 import sub_marker_5
+    from koko_marker.sub_marker_conan import sub_marker_conan
     from koko_marker.base_operator import MarkerEXIF, validate_exif
     from koko_marker.config import APP_CFG, LOGO_CFG
 except ImportError:
-    from koko_film.koko_marker._marker_1 import _sub_marker_1
-    from koko_film.koko_marker._marker_2 import _sub_marker_2
-    from koko_film.koko_marker._marker_3 import _sub_marker_3
-    from koko_film.koko_marker._marker_4 import _sub_marker_4
-    from koko_film.koko_marker._marker_5 import _sub_marker_5
-    from koko_film.koko_marker._marker_conan import _sub_marker_conan
+    from koko_film.koko_marker.sub_marker_1 import sub_marker_1
+    from koko_film.koko_marker.sub_marker_2 import sub_marker_2
+    from koko_film.koko_marker.sub_marker_3 import sub_marker_3
+    from koko_film.koko_marker.sub_marker_4 import sub_marker_4
+    from koko_film.koko_marker.sub_marker_5 import sub_marker_5
+    from koko_film.koko_marker.sub_marker_conan import sub_marker_conan
     from koko_film.koko_marker.base_operator import MarkerEXIF, validate_exif
     from koko_film.koko_marker.config import APP_CFG, LOGO_CFG
 
@@ -52,24 +52,26 @@ class Marker:
     def run(self, style, aim_size):
         match style:
             case "MARK_0":
-                img = _sub_marker_1(self.marker_exif)
+                img = sub_marker_1(self.marker_exif)
             case "MARK_1":
-                img = _sub_marker_2(self.marker_exif)
+                img = sub_marker_2(self.marker_exif)
             case "MARK_2":
-                img = _sub_marker_3(self.marker_exif)
+                img = sub_marker_3(self.marker_exif)
             case "MARK_3":
-                img = _sub_marker_4(self.marker_exif)
+                img = sub_marker_4(self.marker_exif)
             case "MARK_4":
-                img = _sub_marker_5(self.marker_exif, theme="dark")
+                img = sub_marker_5(self.marker_exif, theme="dark")
             case "MARK_5":
-                img = _sub_marker_5(self.marker_exif, theme="light")
+                img = sub_marker_5(self.marker_exif, theme="light")
             case "MARK_CONAN":
-                img = _sub_marker_conan(self.marker_exif)
+                img = sub_marker_conan(self.marker_exif)
             case _:
                 img = None
 
         quality = APP_CFG.QUALITY_INIT
-        file_path = Path(self.marker_exif.path_dst, f"{self.marker_exif.filename}_{style}.webp")
+        file_path = Path(
+            self.marker_exif.path_dst, f"{self.marker_exif.filename}_{style}.webp"
+        )
         img.save(file_path, "WEBP", quality=quality)
         webp_size = Path(file_path).stat().st_size
 
@@ -127,7 +129,11 @@ class KokoWaterMark:
         for file in files:
             filename = file.split(".")[0]
             old_size = Path(f"{self.path_src}/{file}").stat().st_size
-            new_size = Path(f"{self.path_dst}/{filename}_{self.watermark_style}.webp").stat().st_size
+            new_size = (
+                Path(f"{self.path_dst}/{filename}_{self.watermark_style}.webp")
+                .stat()
+                .st_size
+            )
             size_list.append([filename, old_size, new_size, new_size / old_size])
         info = pd.DataFrame(size_list, columns=["FILE", "MEM_OLD", "MEM_NEW", "RATE"])
 

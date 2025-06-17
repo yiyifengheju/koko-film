@@ -9,3 +9,6 @@ wheels/
 .venv
 *.webp
 *.jpg
+*/src/
+*/dst/
+*/src_back/

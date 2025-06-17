@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_1.py
+@File Name: sub_marker_1.py
 @Time: 2025/6/10 00:23
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -35,7 +35,7 @@ class PARAM:
     font_3 = ImageFont.FreeTypeFont(font=FONTS_CFG.FONT_LATO, size=font_size_3)
 
 
-def _sub_marker_1(marker_exif: MarkerEXIF):
+def sub_marker_1(marker_exif: MarkerEXIF):
     img = generate_border(
         marker_exif.width,
         marker_exif.height,

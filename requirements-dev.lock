@@ -10,3 +10,42 @@
 #   universal: false
 
 -e file:.
+annotated-types==0.7.0
+    # via pydantic
+colorama==0.4.6
+    # via tqdm
+exifread==3.3.1
+    # via koko-film
+numpy==2.3.0
+    # via pandas
+    # via pandas-stubs
+pandas==2.3.0
+    # via koko-film
+pandas-stubs==2.2.3.250527
+    # via koko-film
+pillow==11.2.1
+    # via koko-film
+pydantic==2.11.7
+    # via koko-film
+pydantic-core==2.33.2
+    # via pydantic
+python-dateutil==2.9.0.post0
+    # via pandas
+pytz==2025.2
+    # via pandas
+six==1.17.0
+    # via python-dateutil
+toml==0.10.2
+    # via koko-film
+tqdm==4.67.1
+    # via koko-film
+types-pytz==2025.2.0.20250516
+    # via pandas-stubs
+typing-extensions==4.14.0
+    # via pydantic
+    # via pydantic-core
+    # via typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
+tzdata==2025.2
+    # via pandas

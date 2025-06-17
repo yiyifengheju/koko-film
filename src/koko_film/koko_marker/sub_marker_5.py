@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_5.py
+@File Name: sub_marker_5.py
 @Time: 2025/6/11 00:05
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -41,7 +41,7 @@ class PARAM:
     }
 
 
-def _sub_marker_5(
+def sub_marker_5(
     marker_exif: MarkerEXIF,
     theme: Literal["dark", "light"] = "dark",
 ):

@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_4.py
+@File Name: sub_marker_4.py
 @Time: 2025/6/11 00:05
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -32,7 +32,7 @@ class PARAM:
     logo_size = (int(border_width / 4 * 5.9), int(border_width / 4))
 
 
-def _sub_marker_4(marker_exif):
+def sub_marker_4(marker_exif):
     img = generate_border(
         marker_exif.width,
         marker_exif.height,

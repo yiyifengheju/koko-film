@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_3.py
+@File Name: sub_marker_3.py
 @Time: 2025/6/11 00:04
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -32,7 +32,7 @@ class PARAM:
     color = (255, 255, 255, 255)
 
 
-def _sub_marker_3(marker_exif: MarkerEXIF):
+def sub_marker_3(marker_exif: MarkerEXIF):
     img = generate_border(
         marker_exif.width,
         marker_exif.height,

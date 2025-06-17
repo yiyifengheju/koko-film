@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: _marker_conan.py
+@File Name: sub_marker_conan.py
 @Time: 2025/6/9 23:56
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -32,7 +32,7 @@ class PARAM:
     stroke_color = "black"
 
 
-def _sub_marker_conan(marker_exif: MarkerEXIF):
+def sub_marker_conan(marker_exif: MarkerEXIF):
     draw = ImageDraw.Draw(marker_exif.image)
     bbox = draw.textbbox((0, 0), PARAM.text, PARAM.font)
     text_width = bbox[2] - bbox[0]
