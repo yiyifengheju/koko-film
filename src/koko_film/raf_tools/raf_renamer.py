@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 import subprocess
 import tqdm
+from config import BIN_CFG
 
 try:
     from raf_tools.config import BIN_CFG, APP_CFG
@@ -99,6 +100,6 @@ def raf_renamer(
 
 
 if __name__ == "__main__":
-    src = r"C:\Users\mastermao\Desktop\101_FUJI"
+    src = r"C:\Users\mastermao\Desktop\dcim"
     dst = r"C:\Users\mastermao\Desktop\RAF"
     raf_renamer(src, dst, aim_model="")

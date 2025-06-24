@@ -49,17 +49,17 @@ def sub_marker_1(marker_exif: MarkerEXIF):
         int(PARAM.border_width * 2 / 3),
         marker_exif.height + int(PARAM.border_width / 6),
     )
-    text_1 = marker_exif.cam_model
+    text_1 = marker_exif.CAM_MODEL
     draw.text(xy=txt_loc_1, text=text_1, fill=PARAM.txt_color, font=PARAM.font_1)
 
     # 计算下后面的宽度
     text_2 = (
-        f"{marker_exif.focal_length}mm  "
-        f"f/{marker_exif.f_number:.1f}  "
-        f"{marker_exif.exposure_time}  "
-        f"ISO{marker_exif.iso}"
+        f"{marker_exif.FOCAL_LENGTH}mm  "
+        f"f/{marker_exif.F_NUMBER:.1f}  "
+        f"{marker_exif.EXPOSURE_TIME}  "
+        f"ISO{marker_exif.ISO}"
     )
-    text_3 = f"{marker_exif.lens_make}  {marker_exif.lens_model}"
+    text_3 = f"{marker_exif.LENS_MAKE}  {marker_exif.LENS_MODEL}"
 
     bbox_2 = draw.textbbox((0, 0), text_2, PARAM.font_2)
     text_width_2 = bbox_2[2] - bbox_2[0]

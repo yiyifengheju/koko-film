@@ -58,7 +58,7 @@ def sub_marker_2(marker_exif: MarkerEXIF):
     draw = ImageDraw.Draw(img)
 
     text_2 = (
-        f"{marker_exif.focal_length}mm  f/{marker_exif.f_number:.1f}  {marker_exif.exposure_time}  ISO{marker_exif.iso}"
+        f"{marker_exif.FOCAL_LENGTH}mm  f/{marker_exif.F_NUMBER:.1f}  {marker_exif.EXPOSURE_TIME}  ISO{marker_exif.ISO}"
     )
     bbox = draw.textbbox((0, 0), text_2, PARAM.font)
     text_width = bbox[2] - bbox[0]

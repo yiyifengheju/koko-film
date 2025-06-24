@@ -70,7 +70,7 @@ class Marker:
 
         quality = APP_CFG.QUALITY_INIT
         file_path = Path(
-            self.marker_exif.path_dst, f"{self.marker_exif.filename}_{style}.webp"
+            self.marker_exif.path_dst, f"{self.marker_exif.FILENAME}_{style}.webp"
         )
         img.save(file_path, "WEBP", quality=quality)
         webp_size = Path(file_path).stat().st_size
