@@ -13,6 +13,7 @@
 
 from PIL import Image, ImageDraw, ImageFont
 
+from koko_film.common.base import ArchImages
 from koko_film.common.config import config
 from koko_film.koko_marker.base import generate_border
 
@@ -28,31 +29,36 @@ class PARAM:
     logo_size = (int(border_width / 4 * 5.9), int(border_width / 4))
 
 
-def sub_marker_4(marker_exif):
+def sub_marker_4(
+    marker_exif: ArchImages,
+    image: Image,
+    w: int,
+    h: int,
+):
     img = generate_border(
-        marker_exif.WIDTH,
-        marker_exif.HEIGHT,
+        w,
+        h,
         PARAM.border,
         color=PARAM.color,
     )
 
-    img.paste(marker_exif.IMAGE, PARAM.loc)
+    img.paste(image, PARAM.loc)
     draw = ImageDraw.Draw(img)
 
-    text_2 = f"{marker_exif.FOCAL_LENGTH}mm  f/{marker_exif.F_NUMBER:.1f}  {marker_exif.EXPOSURE_TIME}  ISO{marker_exif.ISO}"
+    text_2 = f"{marker_exif.FOCAL_LENGTH}  f/{marker_exif.F_NUMBER}  {marker_exif.EXPOSURE_TIME}  ISO{marker_exif.ISO}"
     bbox = draw.textbbox((0, 0), text_2, PARAM.font)
     text_width = bbox[2] - bbox[0]
     txt_loc_2 = (
-        int(marker_exif.WIDTH * 0.5 - text_width / 2),
-        int(marker_exif.HEIGHT + PARAM.border_width / 5 * 3),
+        int(w * 0.5 - text_width / 2),
+        int(h + PARAM.border_width / 5 * 3),
     )
     draw.text(xy=txt_loc_2, text=text_2, fill=PARAM.txt_color, font=PARAM.font)
 
     logo_loc = (
-        int(marker_exif.WIDTH * 0.5 - PARAM.logo_size[0] / 2),
-        int(marker_exif.HEIGHT + PARAM.border_width / 3.5),
+        int(w * 0.5 - PARAM.logo_size[0] / 2),
+        int(h + PARAM.border_width / 3.5),
     )
-    logo = Image.open(marker_exif.LOGO).convert("RGBA").resize(PARAM.logo_size)
+    logo = Image.open(config.LOGO.FUJIFILM).convert("RGBA").resize(PARAM.logo_size)
     solid_layer = img.crop(
         (
             logo_loc[0],

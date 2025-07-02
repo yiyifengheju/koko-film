@@ -11,10 +11,10 @@
 =========================================================================
 """
 
-from PIL import ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
+from koko_film.common.base import ArchImages
 from koko_film.common.config import config
-from koko_film.koko_marker.base import MarkerEXIF
 
 
 class PARAM:
@@ -28,13 +28,18 @@ class PARAM:
     stroke_color = "black"
 
 
-def sub_marker_conan(marker_exif: MarkerEXIF):
-    draw = ImageDraw.Draw(marker_exif.IMAGE)
+def sub_marker_conan(
+    marker_exif: ArchImages,
+    image: Image,
+    w: int,
+    h: int,
+):
+    draw = ImageDraw.Draw(image)
     bbox = draw.textbbox((0, 0), PARAM.text, PARAM.font)
     text_width = bbox[2] - bbox[0]
     txt_loc_2 = (
-        int(marker_exif.WIDTH * 0.5 - text_width / 2),
-        int(marker_exif.HEIGHT - PARAM.border_width / 0.4),
+        int(w * 0.5 - text_width / 2),
+        int(h - PARAM.border_width / 0.4),
     )
     draw.text(
         xy=txt_loc_2,
@@ -45,4 +50,4 @@ def sub_marker_conan(marker_exif: MarkerEXIF):
         stroke_fill=PARAM.stroke_color,
         align="center",
     )
-    return marker_exif.IMAGE
+    return image

@@ -13,8 +13,9 @@
 
 from PIL import Image, ImageDraw, ImageFont
 
-from koko_film.koko_marker.base import MarkerEXIF, generate_border
+from koko_film.common.base import ArchImages
 from koko_film.common.config import config
+from koko_film.koko_marker.base import generate_border
 
 
 class PARAM:
@@ -31,27 +32,32 @@ class PARAM:
     font_3 = ImageFont.FreeTypeFont(font=config.FONTS.LATO, size=font_size_3)
 
 
-def sub_marker_1(marker_exif: MarkerEXIF):
+def sub_marker_1(
+    marker_exif: ArchImages,
+    image: Image,
+    w: int,
+    h: int,
+):
     img = generate_border(
-        marker_exif.WIDTH,
-        marker_exif.HEIGHT,
+        w,
+        h,
         PARAM.border,
         color=PARAM.layer_color,
     )
-    img.paste(marker_exif.IMAGE, PARAM.loc)
+    img.paste(image, PARAM.loc)
     draw = ImageDraw.Draw(img)
 
     txt_loc_1 = (
         int(PARAM.border_width * 2 / 3),
-        marker_exif.HEIGHT + int(PARAM.border_width / 6),
+        h + int(PARAM.border_width / 6),
     )
     text_1 = marker_exif.CAM_MODEL
     draw.text(xy=txt_loc_1, text=text_1, fill=PARAM.txt_color, font=PARAM.font_1)
 
     # 计算下后面的宽度
     text_2 = (
-        f"{marker_exif.FOCAL_LENGTH}mm  "
-        f"f/{marker_exif.F_NUMBER:.1f}  "
+        f"{marker_exif.FOCAL_LENGTH}  "
+        f"f/{marker_exif.F_NUMBER}  "
         f"{marker_exif.EXPOSURE_TIME}  "
         f"ISO{marker_exif.ISO}"
     )
@@ -64,25 +70,25 @@ def sub_marker_1(marker_exif: MarkerEXIF):
     text_max_width = max(text_width_2, text_width_3)
 
     txt_loc_2 = (
-        int(marker_exif.WIDTH - text_max_width - PARAM.border_width / 3),
-        int(marker_exif.HEIGHT + PARAM.border_width / 7.5),
+        int(w - text_max_width - PARAM.border_width / 3),
+        int(h + PARAM.border_width / 7.5),
     )
     draw.text(xy=txt_loc_2, text=text_2, fill=PARAM.txt_color, font=PARAM.font_2)
 
     txt_loc_3 = (
-        int(marker_exif.WIDTH - text_max_width - PARAM.border_width / 3),
-        marker_exif.HEIGHT + int(PARAM.border_width / 7 * 4),
+        int(w - text_max_width - PARAM.border_width / 3),
+        h + int(PARAM.border_width / 7 * 4),
     )
     draw.text(xy=txt_loc_3, text=text_3, fill=PARAM.txt_color, font=PARAM.font_3)
 
     line_loc = [
         (
-            int(marker_exif.WIDTH - text_max_width - PARAM.border_width / 2),
-            int(marker_exif.HEIGHT + PARAM.border_width / 5),
+            int(w - text_max_width - PARAM.border_width / 2),
+            int(h + PARAM.border_width / 5),
         ),
         (
-            int(marker_exif.WIDTH - text_max_width - PARAM.border_width / 2),
-            int(marker_exif.HEIGHT + PARAM.border_width * 4 / 5),
+            int(w - text_max_width - PARAM.border_width / 2),
+            int(h + PARAM.border_width * 4 / 5),
         ),
     ]
     draw.line(line_loc, width=3, fill=PARAM.txt_color)
@@ -92,10 +98,10 @@ def sub_marker_1(marker_exif: MarkerEXIF):
         int(PARAM.border_width / 5 * 2),
     )
     logo_loc = (
-        int(marker_exif.WIDTH - text_max_width - PARAM.border_width * 2 / 3 - logo_size[0]),
-        int(marker_exif.HEIGHT + PARAM.border_width / 3.5),
+        int(w - text_max_width - PARAM.border_width * 2 / 3 - logo_size[0]),
+        int(h + PARAM.border_width / 3.5),
     )
-    logo = Image.open(marker_exif.LOGO).convert("RGBA").resize(logo_size)
+    logo = Image.open(config.LOGO.FUJIFILM).convert("RGBA").resize(logo_size)
     solid_layer = Image.new("RGBA", logo_size, PARAM.layer_color)
     logo = Image.alpha_composite(solid_layer, logo)
     img.paste(logo, logo_loc)

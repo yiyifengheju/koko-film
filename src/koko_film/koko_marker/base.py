@@ -37,6 +37,9 @@ def generate_border(
 class MarkerEXIF:
     IMAGE: Image.Image
     FILENAME: str
+    SHOT_TIME: datetime
+
+    INIT_SIZE: int
     AIM_SIZE: int
     PATH_DST: str
     ARTIST: str
@@ -50,7 +53,6 @@ class MarkerEXIF:
     CAM_MODEL: str
     LENS_MAKE: str
     LENS_MODEL: str
-    SHOT_TIME: datetime
     LOGO: str
     LOGO_PURE: str
 

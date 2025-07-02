@@ -13,7 +13,9 @@
 
 from PIL import Image, ImageFilter
 
-from koko_film.koko_marker.base import MarkerEXIF, generate_border
+from koko_film.common.base import ArchImages
+from koko_film.common.config import config
+from koko_film.koko_marker.base import generate_border
 
 
 class PARAM:
@@ -29,18 +31,23 @@ class PARAM:
     color = (255, 255, 255, 255)
 
 
-def sub_marker_3(marker_exif: MarkerEXIF):
+def sub_marker_3(
+    marker_exif: ArchImages,
+    image: Image,
+    w: int,
+    h: int,
+):
     img = generate_border(
-        marker_exif.WIDTH,
-        marker_exif.HEIGHT,
+        w,
+        h,
         PARAM.border,
         color=PARAM.color,
     )
     shadow = Image.new(
         "RGBA",
         (
-            marker_exif.WIDTH + int(PARAM.border_width / 3),
-            marker_exif.HEIGHT + int(PARAM.border_width / 3),
+            w + int(PARAM.border_width / 3),
+            h + int(PARAM.border_width / 3),
         ),
         (150, 150, 150, 255),
     )
@@ -53,15 +60,15 @@ def sub_marker_3(marker_exif: MarkerEXIF):
     )
     img = img.filter(ImageFilter.GaussianBlur(50))
 
-    img.paste(marker_exif.IMAGE, (PARAM.loc[0], PARAM.loc[1]))
+    img.paste(image, (PARAM.loc[0], PARAM.loc[1]))
 
     logo_size = (int(PARAM.border_width / 2 * 5.9), int(PARAM.border_width / 2))
     logo_loc = (
-        int(marker_exif.WIDTH * 0.5 - logo_size[0] / 2 + PARAM.border_width),
-        int(marker_exif.HEIGHT + PARAM.border_width / 0.85),
+        int(w * 0.5 - logo_size[0] / 2 + PARAM.border_width),
+        int(h + PARAM.border_width / 0.85),
     )
 
-    logo = Image.open(marker_exif.LOGO).convert("RGBA").resize(logo_size)
+    logo = Image.open(config.LOGO.FUJIFILM).convert("RGBA").resize(logo_size)
     solid_layer = img.crop(
         (
             logo_loc[0],
