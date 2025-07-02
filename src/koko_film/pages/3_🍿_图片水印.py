@@ -98,13 +98,13 @@ def page_main():
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.image("./images/DSCF9285.webp", caption="样式 0")
+        st.image("./sources/DSCF9285.webp", caption="样式 0")
     with col2:
-        st.image("./images/DSCF9304.webp", caption="样式 1")
+        st.image("./sources/DSCF9304.webp", caption="样式 1")
     with col3:
-        st.image("./images/DSCF9302.webp", caption="样式 2")
+        st.image("./sources/DSCF9302.webp", caption="样式 2")
     with col4:
-        st.image("./images/DSCF9307.webp", caption="样式 3")
+        st.image("./sources/DSCF9307.webp", caption="样式 3")
 
 
 if __name__ == "__main__":

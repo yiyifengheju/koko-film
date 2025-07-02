@@ -1,0 +1,25 @@
+[VERSION]
+VERSION = 'V2025.4'
+AUTHOR = '一一风和橘'
+
+[BIN]
+CWEBP = "./bin/cwebp.exe"
+EXIFTOOL = "./bin/exiftool.exe"
+
+[FONTS]
+LATO = "./sources/Fonts/Lato-Italic.ttf"
+MONACO = "./sources/Fonts/MONACO.TTF"
+MPLUS = "./sources/Fonts/MPLUS1p-Regular.ttf"
+NOTO_JP = "./sources/Fonts/NotoSansJP-Regular.ttf"
+NOTO_SC = "./sources/Fonts/NotoSerifSC-Regular.otf"
+
+[LOGO]
+FUJIFILM = "./sources/Logo/Fujifilm.png"
+FUJIFILM_PURE = "./sources/Logo/Fujifilm_Pure.png"
+SONY = "./sources/Logo/Sony.png"
+SONY_PURE = "./sources/Logo/Sony_Pure.png"
+
+[APP]
+THEME = "DARK"
+QUALITY_INIT = 100
+MAX_WORKERS = 8

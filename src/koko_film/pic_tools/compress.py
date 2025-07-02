@@ -28,9 +28,9 @@ except ImportError:
 
 def __sub_compress_webp(img_name, path_src, path_dst, limit_size=500, limit_width=2560):
     aim_size = limit_size * 1024
-    assert Path(CONFIG.PATH_CWEBP).exists(), "cwebp.exe is not found"
+    assert Path(CONFIG.CWEBP).exists(), "cwebp.exe is not found"
     cmd = (
-        f'{CONFIG.PATH_CWEBP} -q {CONFIG.QUALITY_INIT} {path_src}/{img_name} -o '
+        f'{CONFIG.CWEBP} -q {CONFIG.QUALITY_INIT} {path_src}/{img_name} -o '
         f'{path_dst}/{img_name.split(".")[0]}.'
         f'webp -m 6 -size {aim_size} -resize {limit_width} 0 -noalpha -quiet -jpeg_like'
     )

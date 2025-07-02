@@ -1,30 +1,26 @@
 """
 =========================================================================
-@File Name: sub_marker_conan.py
+@File Name: sub_marker_6.py
 @Time: 2025/6/9 23:56
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
 @Motto: "The trick, William Potter, is not minding that it hurts."
 @Description:
--
+- 柯南片尾水印
 -
 =========================================================================
 """
 
 from PIL import ImageDraw, ImageFont
 
-try:
-    from koko_marker.base_operator import MarkerEXIF
-    from koko_marker.config import FONTS_CFG
-except ImportError:
-    from koko_film.koko_marker.base_operator import MarkerEXIF
-    from koko_film.koko_marker.config import FONTS_CFG
+from koko_film.common.config import config
+from koko_film.koko_marker.base import MarkerEXIF
 
 
 class PARAM:
     border_width = 150
     font_size = 72
-    font = ImageFont.FreeTypeFont(font=FONTS_CFG.FONT_NOTO_JP, size=font_size)
+    font = ImageFont.FreeTypeFont(font=config.FONTS.NOTO_JP, size=font_size)
     THEME = "dark"
     txt_color = (255, 255, 255) if THEME == "dark" else (0, 0, 0)
     text = "原   作\n青 山 剛 昌\n小学館「週刊少年サンデー」連載中"
@@ -33,12 +29,12 @@ class PARAM:
 
 
 def sub_marker_conan(marker_exif: MarkerEXIF):
-    draw = ImageDraw.Draw(marker_exif.image)
+    draw = ImageDraw.Draw(marker_exif.IMAGE)
     bbox = draw.textbbox((0, 0), PARAM.text, PARAM.font)
     text_width = bbox[2] - bbox[0]
     txt_loc_2 = (
-        int(marker_exif.width * 0.5 - text_width / 2),
-        int(marker_exif.height - PARAM.border_width / 0.4),
+        int(marker_exif.WIDTH * 0.5 - text_width / 2),
+        int(marker_exif.HEIGHT - PARAM.border_width / 0.4),
     )
     draw.text(
         xy=txt_loc_2,
@@ -49,4 +45,4 @@ def sub_marker_conan(marker_exif: MarkerEXIF):
         stroke_fill=PARAM.stroke_color,
         align="center",
     )
-    return marker_exif.image
+    return marker_exif.IMAGE

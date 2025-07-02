@@ -13,12 +13,8 @@
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-try:
-    from koko_marker.base_operator import MarkerEXIF, generate_border
-    from koko_marker.config import FONTS_CFG, LOGO_CFG
-except ImportError:
-    from koko_film.koko_marker.base_operator import MarkerEXIF, generate_border
-    from koko_film.koko_marker.config import FONTS_CFG, LOGO_CFG
+from koko_film.common.config import config
+from koko_film.koko_marker.base import MarkerEXIF, generate_border
 
 
 class PARAM:
@@ -33,38 +29,36 @@ class PARAM:
     loc = (150, 50)
     color = (255, 255, 255, 255)
     font_size = 48
-    font = ImageFont.FreeTypeFont(font=FONTS_CFG.FONT_LATO, size=font_size)
+    font = ImageFont.FreeTypeFont(font=config.FONTS.LATO, size=font_size)
     THEME = "dark"
-    LOGO = LOGO_CFG.LOGO_FUJIFILM_PURE if THEME == "dark" else LOGO_CFG.LOGO_FUJIFILM
+    LOGO = config.LOGO.FUJIFILM_PURE if THEME == "dark" else config.LOGO.FUJIFILM
     txt_color = (255, 255, 255) if THEME == "dark" else (0, 0, 0)
 
 
 def sub_marker_2(marker_exif: MarkerEXIF):
     img = generate_border(
-        marker_exif.width,
-        marker_exif.height,
+        marker_exif.WIDTH,
+        marker_exif.HEIGHT,
         PARAM.border,
         color=PARAM.color,
     )
-    tmp = marker_exif.image.resize(
+    tmp = marker_exif.IMAGE.resize(
         (
-            marker_exif.width + PARAM.border_width * 2,
-            marker_exif.height + PARAM.border_width * 2,
+            marker_exif.WIDTH + PARAM.border_width * 2,
+            marker_exif.HEIGHT + PARAM.border_width * 2,
         ),
     )
     blurred_img = tmp.filter(ImageFilter.GaussianBlur(radius=50))
     img.paste(blurred_img, (0, 0))
-    img.paste(marker_exif.image, (PARAM.loc[0], PARAM.loc[1]))
+    img.paste(marker_exif.IMAGE, (PARAM.loc[0], PARAM.loc[1]))
     draw = ImageDraw.Draw(img)
 
-    text_2 = (
-        f"{marker_exif.FOCAL_LENGTH}mm  f/{marker_exif.F_NUMBER:.1f}  {marker_exif.EXPOSURE_TIME}  ISO{marker_exif.ISO}"
-    )
+    text_2 = f"{marker_exif.FOCAL_LENGTH}mm  f/{marker_exif.F_NUMBER:.1f}  {marker_exif.EXPOSURE_TIME}  ISO{marker_exif.ISO}"
     bbox = draw.textbbox((0, 0), text_2, PARAM.font)
     text_width = bbox[2] - bbox[0]
     txt_loc_2 = (
-        int(marker_exif.width * 0.5 - text_width / 2 + PARAM.border_width),
-        int(marker_exif.height + PARAM.border_width * 1.3),
+        int(marker_exif.WIDTH * 0.5 - text_width / 2 + PARAM.border_width),
+        int(marker_exif.HEIGHT + PARAM.border_width * 1.3),
     )
     draw.text(
         xy=txt_loc_2,
@@ -75,8 +69,8 @@ def sub_marker_2(marker_exif: MarkerEXIF):
 
     logo = Image.open(PARAM.LOGO).convert("RGBA").resize(PARAM.logo_size)
     logo_loc = (
-        int(marker_exif.width * 0.5 - PARAM.logo_size[0] / 2 + PARAM.border_width),
-        int(marker_exif.height + PARAM.border_width / 1.5),
+        int(marker_exif.WIDTH * 0.5 - PARAM.logo_size[0] / 2 + PARAM.border_width),
+        int(marker_exif.HEIGHT + PARAM.border_width / 1.5),
     )
     solid_layer = blurred_img.crop(
         (

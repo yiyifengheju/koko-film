@@ -13,10 +13,7 @@
 
 from PIL import Image, ImageFilter
 
-try:
-    from koko_marker.base_operator import MarkerEXIF, generate_border
-except ImportError:
-    from koko_film.koko_marker.base_operator import MarkerEXIF, generate_border
+from koko_film.koko_marker.base import MarkerEXIF, generate_border
 
 
 class PARAM:
@@ -34,16 +31,16 @@ class PARAM:
 
 def sub_marker_3(marker_exif: MarkerEXIF):
     img = generate_border(
-        marker_exif.width,
-        marker_exif.height,
+        marker_exif.WIDTH,
+        marker_exif.HEIGHT,
         PARAM.border,
         color=PARAM.color,
     )
     shadow = Image.new(
         "RGBA",
         (
-            marker_exif.width + int(PARAM.border_width / 3),
-            marker_exif.height + int(PARAM.border_width / 3),
+            marker_exif.WIDTH + int(PARAM.border_width / 3),
+            marker_exif.HEIGHT + int(PARAM.border_width / 3),
         ),
         (150, 150, 150, 255),
     )
@@ -56,15 +53,15 @@ def sub_marker_3(marker_exif: MarkerEXIF):
     )
     img = img.filter(ImageFilter.GaussianBlur(50))
 
-    img.paste(marker_exif.image, (PARAM.loc[0], PARAM.loc[1]))
+    img.paste(marker_exif.IMAGE, (PARAM.loc[0], PARAM.loc[1]))
 
     logo_size = (int(PARAM.border_width / 2 * 5.9), int(PARAM.border_width / 2))
     logo_loc = (
-        int(marker_exif.width * 0.5 - logo_size[0] / 2 + PARAM.border_width),
-        int(marker_exif.height + PARAM.border_width / 0.85),
+        int(marker_exif.WIDTH * 0.5 - logo_size[0] / 2 + PARAM.border_width),
+        int(marker_exif.HEIGHT + PARAM.border_width / 0.85),
     )
 
-    logo = Image.open(marker_exif.logo).convert("RGBA").resize(logo_size)
+    logo = Image.open(marker_exif.LOGO).convert("RGBA").resize(logo_size)
     solid_layer = img.crop(
         (
             logo_loc[0],

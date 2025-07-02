@@ -24,7 +24,7 @@ except ImportError:
     from koko_film.koko_marker.config import BIN_CFG, APP_CFG
 
 
-bin_exiftool = Path(BIN_CFG.PATH_EXIFTOOL).absolute()
+bin_exiftool = Path(BIN_CFG.EXIFTOOL).absolute()
 
 def run_cmd(cmd, cwd):
     try:
@@ -80,7 +80,7 @@ def raf_renamer(
     None
 
     """
-    assert Path(BIN_CFG.PATH_EXIFTOOL).exists(), "exiftool.exe is not found"
+    assert Path(BIN_CFG.EXIFTOOL).exists(), "exiftool.exe is not found"
 
     if not Path(path_dst).exists():
         Path(path_dst).mkdir(parents=True, exist_ok=True)

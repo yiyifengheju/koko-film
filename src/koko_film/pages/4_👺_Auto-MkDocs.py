@@ -37,7 +37,7 @@ def compress_rename(img_src, limit_width, max_workers):
     am.run(is_auto=False)
     files = os.listdir(am.path_src)
     for file in files:
-        Path(f'{am.path_dst}/{file.split(".")[0]}.webp').rename(f'{am.path_dst}/low-{file.split(".")[0]}.webp')
+        Path(f'{am.PATH_DST}/{file.split(".")[0]}.webp').rename(f'{am.PATH_DST}/low-{file.split(".")[0]}.webp')
 
 
 def page_main():
@@ -95,7 +95,7 @@ def page_main():
                 st.write(info)
     st.markdown("---")
     if "am" in st.session_state:
-        dst = st.session_state.am.path_dst
+        dst = st.session_state.am.PATH_DST
         title = st.session_state.am.title
         files = os.listdir(f"{dst}/{title}")
         random.shuffle(files)

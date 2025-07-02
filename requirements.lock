@@ -10,9 +10,23 @@
 #   universal: false
 
 -e file:.
+altair==5.5.0
+    # via streamlit
 annotated-types==0.7.0
     # via pydantic
+attrs==25.3.0
+    # via jsonschema
+    # via referencing
+blinker==1.9.0
+    # via streamlit
+cachetools==6.1.0
+    # via streamlit
+certifi==2025.6.15
+    # via requests
+charset-normalizer==3.4.2
+    # via requests
 click==8.2.1
+    # via streamlit
     # via typer
 colorama==0.4.6
     # via click
@@ -21,46 +35,93 @@ colorama==0.4.6
     # via tqdm
 exifread==3.3.1
     # via koko-film
+gitdb==4.0.12
+    # via gitpython
+gitpython==3.1.44
+    # via streamlit
 halo==0.0.31
     # via koko-film
+idna==3.10
+    # via requests
+jinja2==3.1.6
+    # via altair
+    # via pydeck
+jsonschema==4.24.0
+    # via altair
+jsonschema-specifications==2025.4.1
+    # via jsonschema
 log-symbols==0.0.14
     # via halo
 markdown-it-py==3.0.0
     # via rich
+markupsafe==3.0.2
+    # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+narwhals==1.44.0
+    # via altair
 numpy==2.3.0
     # via pandas
     # via pandas-stubs
+    # via pydeck
+    # via streamlit
+packaging==25.0
+    # via altair
+    # via streamlit
 pandas==2.3.0
     # via koko-film
+    # via streamlit
 pandas-stubs==2.2.3.250527
     # via koko-film
 pillow==11.2.1
     # via koko-film
+    # via streamlit
+protobuf==6.31.1
+    # via streamlit
+pyarrow==20.0.0
+    # via streamlit
 pydantic==2.11.7
     # via koko-film
 pydantic-core==2.33.2
     # via pydantic
+pydeck==0.9.1
+    # via streamlit
 pygments==2.19.1
     # via rich
 python-dateutil==2.9.0.post0
     # via pandas
 pytz==2025.2
     # via pandas
+referencing==0.36.2
+    # via jsonschema
+    # via jsonschema-specifications
+requests==2.32.4
+    # via streamlit
 rich==14.0.0
     # via typer
+rpds-py==0.25.1
+    # via jsonschema
+    # via referencing
 shellingham==1.5.4
     # via typer
 six==1.17.0
     # via halo
     # via python-dateutil
+smmap==5.0.2
+    # via gitdb
 spinners==0.0.24
     # via halo
+streamlit==1.46.0
+    # via koko-film
+tenacity==9.1.2
+    # via streamlit
 termcolor==3.1.0
     # via halo
 toml==0.10.2
     # via koko-film
+    # via streamlit
+tornado==6.5.1
+    # via streamlit
 tqdm==4.67.1
     # via koko-film
 typer==0.16.0
@@ -68,11 +129,18 @@ typer==0.16.0
 types-pytz==2025.2.0.20250516
     # via pandas-stubs
 typing-extensions==4.14.0
+    # via altair
     # via pydantic
     # via pydantic-core
+    # via referencing
+    # via streamlit
     # via typer
     # via typing-inspection
 typing-inspection==0.4.1
     # via pydantic
 tzdata==2025.2
     # via pandas
+urllib3==2.5.0
+    # via requests
+watchdog==6.0.0
+    # via streamlit

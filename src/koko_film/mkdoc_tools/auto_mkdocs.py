@@ -103,7 +103,7 @@ class AutoMkdocs:
     def compress_image(self, img_name):
         aim_size = self.limit_size * 1024
         cmd = (
-            f'{ENV.PATH_CWEBP} -q {ENV.QUALITY_INIT} {self.path_src}/{img_name} -o '
+            f'{ENV.CWEBP} -q {ENV.QUALITY_INIT} {self.path_src}/{img_name} -o '
             f'{self.path_dst}/{self.title}/{img_name.split(".")[0]}.webp'
             f' -m 6 -size {aim_size} -resize {self.width_limit} 0 -noalpha -quiet -jpeg_like'
         )

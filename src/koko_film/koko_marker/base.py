@@ -1,6 +1,6 @@
 """
 =========================================================================
-@File Name: base_operator.py
+@File Name: base.py
 @Time: 2025/6/10 00:38
 @Program IDE: PyCharm
 @Create by Author: 一一风和橘
@@ -35,24 +35,24 @@ def generate_border(
 
 @dataclass
 class MarkerEXIF:
-    image: Image.Image
-    filename: str
-    aim_size: int
-    path_dst: str
-    artist: str
-    width: int
-    height: int
-    focal_length: float
-    f_number: float
-    exposure_time: str
-    iso: int
-    cam_make: str
-    cam_model: str
-    lens_make: str
-    lens_model: str
-    shot_time: datetime
-    logo: str
-    logo_pure: str
+    IMAGE: Image.Image
+    FILENAME: str
+    AIM_SIZE: int
+    PATH_DST: str
+    ARTIST: str
+    WIDTH: int
+    HEIGHT: int
+    FOCAL_LENGTH: float
+    F_NUMBER: float
+    EXPOSURE_TIME: str
+    ISO: int
+    CAM_MAKE: str
+    CAM_MODEL: str
+    LENS_MAKE: str
+    LENS_MODEL: str
+    SHOT_TIME: datetime
+    LOGO: str
+    LOGO_PURE: str
 
 
 @validate_call
