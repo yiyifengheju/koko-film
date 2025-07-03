@@ -20,17 +20,14 @@ import pandas as pd
 import tqdm
 from PIL import Image
 
-try:
-    from ..config import CONFIG
-except ImportError:
-    from config import CONFIG
+from koko_film.common.config import config
 
 
 def __sub_compress_webp(img_name, path_src, path_dst, limit_size=500, limit_width=2560):
     aim_size = limit_size * 1024
-    assert Path(CONFIG.CWEBP).exists(), "cwebp.exe is not found"
+    assert Path(config.CWEBP).exists(), "cwebp.exe is not found"
     cmd = (
-        f'{CONFIG.CWEBP} -q {CONFIG.QUALITY_INIT} {path_src}/{img_name} -o '
+        f'{config.CWEBP} -q {config.QUALITY_INIT} {path_src}/{img_name} -o '
         f'{path_dst}/{img_name.split(".")[0]}.'
         f'webp -m 6 -size {aim_size} -resize {limit_width} 0 -noalpha -quiet -jpeg_like'
     )
@@ -39,12 +36,14 @@ def __sub_compress_webp(img_name, path_src, path_dst, limit_size=500, limit_widt
     return img_name
 
 
-def __sub_cut_cover(img_name, path_src, path_dst, limit_size=500, limit_width=2560, limit_height=853):
+def __sub_cut_cover(
+    img_name, path_src, path_dst, limit_size=500, limit_width=2560, limit_height=853
+):
     filepath = f"{path_src}/{img_name}"
     filename = img_name.split(".")[0]
     old_size = Path(f"{path_src}/{img_name}").stat().st_size
     new_size = old_size
-    quality = CONFIG.QUALITY_INIT
+    quality = config.QUALITY_INIT
     img = Image.open(filepath)
     w = img.size[0]
     h = img.size[1]

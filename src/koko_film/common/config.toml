@@ -23,3 +23,5 @@ SONY_PURE = "./sources/Logo/Sony_Pure.png"
 THEME = "DARK"
 QUALITY_INIT = 100
 MAX_WORKERS = 8
+RAF_ROOT = "H:/200_RAF"
+CALLER_STACK = ""

@@ -13,10 +13,7 @@
 
 import streamlit as st
 
-try:
-    from ..config import CONFIG
-except ImportError:
-    from config import CONFIG
+from koko_film.common.config import config
 
 
 def page_init(title, icon):
@@ -28,11 +25,11 @@ def page_init(title, icon):
         menu_items={
             # 'Get Help': 'https://www.extremelycoolapp.com/help',
             # 'Report a bug': "https://www.extremelycoolapp.com/bug",
-            "About": f"### {icon}{title} \n\n {CONFIG.AUTHOR}",
+            "About": f"### {icon}{title} \n\n {config.AUTHOR}",
         },
     )
     st.title(f"{icon} {title}")
-    st.caption(f"🐸 {CONFIG.AUTHOR}&ensp;&ensp;🍐 {CONFIG.VERSION}")
+    st.caption(f"🐸 {config.AUTHOR}&ensp;&ensp;🍐 {config.VERSION}")
 
 
 def page_md(contents):

@@ -11,6 +11,7 @@
 =========================================================================
 """
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -64,8 +65,9 @@ class Arch:
     SYNC: ArchSync
     IMAGES: dict[str, "ArchImages"]
 
+
 class PathArchiveCls:
-    def __init__(self, root: str):
+    def __init__(self, root: str | Path):
         self.root = Path(root)
         self.toml = Path(root, "Archive.toml")
         self.raf = Path(root, "RAF")
@@ -75,3 +77,40 @@ class PathArchiveCls:
             item.mkdir(parents=True, exist_ok=True)
         if not self.toml.exists():
             self.toml.touch(exist_ok=True)
+
+
+def koko_print(
+    msg: str,
+):
+    if os.environ.get("CALLER_STACK") == "TYPER":
+        import typer
+
+        return typer.echo(msg)
+    elif os.environ.get("CALLER_STACK") == "STREAMLIT":
+        import streamlit as st
+
+        return st.write(msg)
+    else:
+        return print(msg)
+
+
+def koko_print_style(
+    text: str,
+    color_code=30,
+    format_code=None,
+):
+    reset_code = "\033[0m"
+    if format_code:
+        msg = f"\033[{format_code};{color_code}m{text}{reset_code}"
+    else:
+        msg = f"\033[{color_code}m{text}{reset_code}"
+    if os.environ.get("CALLER_STACK") == "TYPER":
+        import typer
+
+        return typer.echo(msg)
+    elif os.environ.get("CALLER_STACK") == "STREAMLIT":
+        import streamlit as st
+
+        return st.write(msg)
+    else:
+        return print(msg)

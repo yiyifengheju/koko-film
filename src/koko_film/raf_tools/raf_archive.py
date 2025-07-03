@@ -25,6 +25,7 @@ from koko_film.common.base import (
     ArchSummary,
     ArchSync,
 )
+from koko_film.common.base import koko_print
 from koko_film.common.config import config
 
 
@@ -40,7 +41,7 @@ def get_exif(img_path: Path) -> ArchImages:
         )
         result.strip()
     except subprocess.CalledProcessError as e:
-        print(e)
+        koko_print(str(e))
         assert 0
     tags = {}
     for line in result.splitlines():
@@ -68,14 +69,19 @@ def get_exif(img_path: Path) -> ArchImages:
         CAM_MODEL=tags["Camera Model Name"],
         LENS_MAKE=tags["Lens Make"],
         LENS_MODEL=tags["Lens Model"],
-        PATH_RAF=img_path.as_posix(),
+        PATH_RAF=img_path.relative_to(config.APP.RAF_ROOT).as_posix(),
         PATH_JPG=[],
         PATH_WEBP=[],
     )
 
 
-def raf_archive(path_root):
-    path_cls = PathArchiveCls(path_root)
+def raf_archive(path_root: str):
+    if Path(path_root).is_dir():
+        path_cls = PathArchiveCls(path_root)
+    elif Path(config.APP.RAF_ROOT, path_root).is_dir():
+        path_cls = PathArchiveCls(Path(config.APP.RAF_ROOT, path_root))
+    else:
+        raise TypeError("输入路径格式错误")
     arch_info = Arch(
         SUMMARY=ArchSummary(DATE=path_cls.root.name),
         SYNC=ArchSync(),
@@ -90,6 +96,13 @@ def raf_archive(path_root):
     for file in path_cls.raf.iterdir():
         if file.suffix == ".RAF":
             info = get_exif(file)
+            cams.append(info.CAM_MODEL)
+            lens.append(info.LENS_MODEL)
+            jpg_tmp = [item for item in jpgs if item.startswith(info.FILENAME)]
+            webp_tmp = [item for item in webps if item.startswith(info.FILENAME)]
+            info.PATH_JPG = jpg_tmp
+            info.PATH_WEBP = webp_tmp
+            arch_info.IMAGES[info.FILENAME] = info
             msg = (
                 f"📷  {file.name} ==> "
                 f"{info.LENS_MAKE} "
@@ -101,18 +114,11 @@ def raf_archive(path_root):
                 f"JPG: {len(info.PATH_JPG)}"
             )
             # spinner.text = msg
-            print(msg)
-            cams.append(info.CAM_MODEL)
-            lens.append(info.LENS_MODEL)
-            jpg_tmp = [item for item in jpgs if item.startswith(info.FILENAME)]
-            webp_tmp = [item for item in webps if item.startswith(info.FILENAME)]
-            info.PATH_JPG = jpg_tmp
-            info.PATH_WEBP = webp_tmp
-            arch_info.IMAGES[info.FILENAME] = info
+            koko_print(msg)
     arch_info.SUMMARY.CAM_MODEL = list(set(cams))
     arch_info.SUMMARY.LENS_MODEL = list(set(lens))
-    msg = f"🎉 {path_cls.root.as_posix()} 归档完成"
-    print(msg)
+    msg = f"🎉  {path_cls.root.as_posix()} 归档完成"
+    koko_print(msg)
     # spinner.stop_and_persist(symbol="🎉 ", text=f"{path_cls.root.as_posix()} 归档完成")
     with path_cls.toml.open(mode="w", encoding="utf-8") as f:
         toml.dump(asdict(arch_info), f)

@@ -49,6 +49,8 @@ class AppCFG(BaseModel):
     THEME: str
     QUALITY_INIT: int
     MAX_WORKERS: int
+    RAF_ROOT: str
+    CALLER_STACK: str
 
 
 class CONFIG(BaseModel):
@@ -114,4 +116,6 @@ class CONFIG(BaseModel):
 
 
 config = CONFIG.from_toml()
+config.APP.CALLER_STACK = os.environ.get("CALLER_STACK")
 spinner_type = {"interval": 80, "frames": ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"]}
+

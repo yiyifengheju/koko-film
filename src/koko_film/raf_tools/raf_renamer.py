@@ -12,19 +12,16 @@
 """
 
 import os
+import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-import subprocess
+
 import tqdm
-from config import BIN_CFG
 
-try:
-    from raf_tools.config import BIN_CFG, APP_CFG
-except ImportError:
-    from koko_film.koko_marker.config import BIN_CFG, APP_CFG
+from koko_film.common.config import config
 
+bin_exiftool = Path(config.BIN.EXIFTOOL).absolute()
 
-bin_exiftool = Path(BIN_CFG.EXIFTOOL).absolute()
 
 def run_cmd(cmd, cwd):
     try:
@@ -38,6 +35,7 @@ def run_cmd(cmd, cwd):
         return result.strip()
     except subprocess.CalledProcessError as e:
         print(e)
+
 
 def run(file, path_src, path_dst, aim_model):
     raf_path = Path(path_src, file).absolute()
@@ -53,14 +51,14 @@ def run(file, path_src, path_dst, aim_model):
                f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/%Y%m%d_%%f.%%e" '
                f'"{raf_path}"')
     # fmt: on
-    run_cmd(cmd, './')
+    run_cmd(cmd, "./")
 
 
 def raf_renamer(
     path_src: str,
     path_dst: str,
     aim_model: str,
-    max_workers: int = APP_CFG.MAX_WORKERS,
+    max_workers: int = config.APP.MAX_WORKERS,
 ) -> None:
     """RAF文件重命名和归档
 
@@ -80,10 +78,9 @@ def raf_renamer(
     None
 
     """
-    assert Path(BIN_CFG.EXIFTOOL).exists(), "exiftool.exe is not found"
+    assert Path(config.BIN.EXIFTOOL).exists(), "exiftool.exe is not found"
 
-    if not Path(path_dst).exists():
-        Path(path_dst).mkdir(parents=True, exist_ok=True)
+    Path(path_dst).mkdir(parents=True, exist_ok=True)
 
     files = os.listdir(path_src)
     t_file_list = tqdm.tqdm(files)
