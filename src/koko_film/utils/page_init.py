@@ -25,11 +25,11 @@ def page_init(title, icon):
         menu_items={
             # 'Get Help': 'https://www.extremelycoolapp.com/help',
             # 'Report a bug': "https://www.extremelycoolapp.com/bug",
-            "About": f"### {icon}{title} \n\n {config.AUTHOR}",
+            "About": f"### {icon}{title} \n\n {config.VERSION.AUTHOR}",
         },
     )
     st.title(f"{icon} {title}")
-    st.caption(f"🐸 {config.AUTHOR}&ensp;&ensp;🍐 {config.VERSION}")
+    st.caption(f"🐸 {config.VERSION.AUTHOR}&ensp;&ensp;🍐 {config.VERSION.VERSION}")
 
 
 def page_md(contents):

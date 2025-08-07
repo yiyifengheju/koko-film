@@ -16,7 +16,7 @@ import sys
 import streamlit as st
 from utils.page_init import page_init
 
-sys.path.append("..")
+sys.path.append(".")
 
 
 def page_main():

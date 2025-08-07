@@ -12,13 +12,14 @@
 """
 
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from pathlib import Path
 
 import pandas as pd
 import tqdm
 from PIL import Image
 
-from koko_film.common.base import PathArchiveCls
+from koko_film.common.base import PathBase
 from koko_film.common.config import config
 from koko_film.koko_marker.sub_marker_1 import sub_marker_1
 from koko_film.koko_marker.sub_marker_2 import sub_marker_2
@@ -33,12 +34,26 @@ class KokoWaterMark:
     def __init__(
         self,
         path_root: str,
+        select_style: list[str] | None = None,
         aim_width: int = 2560,
         aim_size: int = 500,
     ):
         self.aim_width = aim_width
         self.aim_size = aim_size
-        self.path_marker = PathArchiveCls(path_root)
+        self.path_marker = PathBase(path_root)
+        self.select_style = (
+            select_style
+            if select_style is not None
+            else [
+                "MARK_0",
+                "MARK_1",
+                "MARK_2",
+                "MARK_3",
+                "MARK_4",
+                "MARK_5",
+                "MARK_CONAN",
+            ]
+        )
         self.webp_size = {}
 
     def marker(self, file):
@@ -49,19 +64,18 @@ class KokoWaterMark:
         w, h, image = self._resize_img(image)
 
         images = {
-            "MARK_0": sub_marker_1(marker_exif, image.copy(), w, h),
-            "MARK_1": sub_marker_2(marker_exif, image.copy(), w, h),
-            "MARK_2": sub_marker_3(marker_exif, image.copy(), w, h),
-            "MARK_3": sub_marker_4(marker_exif, image.copy(), w, h),
-            "MARK_4": sub_marker_5(marker_exif, image.copy(), w, h, theme="dark"),
-            "MARK_5": sub_marker_5(marker_exif, image.copy(), w, h, theme="light"),
-            "MARK_CONAN": sub_marker_conan(marker_exif, image.copy(), w, h),
+            "MARK_0": partial(sub_marker_1, marker_exif, image.copy(), w, h),
+            "MARK_1": partial(sub_marker_2, marker_exif, image.copy(), w, h),
+            "MARK_2": partial(sub_marker_3, marker_exif, image.copy(), w, h),
+            "MARK_3": partial(sub_marker_4, marker_exif, image.copy(), w, h),
+            "MARK_4": partial(sub_marker_5, marker_exif, image.copy(), w, h, theme="dark"),
+            "MARK_5": partial(sub_marker_5, marker_exif, image.copy(), w, h, theme="light"),
+            "MARK_CONAN": partial(sub_marker_conan, marker_exif, image.copy(), w, h),
         }
-        for style, img in images.items():
+        for style in self.select_style:
+            img = images[style]()
             quality = config.APP.QUALITY_INIT
-            file_path = Path(
-                self.path_marker.webp, f"{marker_exif.FILENAME}_{style}.webp"
-            )
+            file_path = Path(self.path_marker.webp, f"{marker_exif.FILENAME}_{style}.webp")
             img.save(file_path, "WEBP", quality=quality)
             webp_size = Path(file_path).stat().st_size
 
@@ -72,40 +86,19 @@ class KokoWaterMark:
             self.webp_size[file.name][style] = webp_size
 
     def webp_report(self):
-        info = pd.DataFrame(
+        cols = ["FILE", "INIT_MEM"] + [f"{style}_MEM" for style in self.select_style] + ["RATE"]
+        return pd.DataFrame(
             self.webp_size,
-            columns=[
-                "FILE",
-                "INIT_MEM",
-                "MARK_0_MEM",
-                "MARK_1_MEM",
-                "MARK_2_MEM",
-                "MARK_3_MEM",
-                "MARK_4_MEM",
-                "MARK_5_MEM",
-                "MARK_CONAN_MEM",
-                "RATE",
-            ],
+            columns=cols,
         )
-        return info
 
     def run(self):
         files = list(Path(self.path_marker.jpg).glob("*.[jp][pn]g"))
+        for file in files:
+            self.marker(file)
 
-        with tqdm.tqdm(total=len(files)) as pbar:
-
-            def update_progress():
-                pbar.update(1)
-
-            with ThreadPoolExecutor(max_workers=12) as executor:
-                futures = []
-                for file in files:
-                    future = executor.submit(self.marker, file)
-                    future.add_done_callback(update_progress)
-                    futures.append(future)
-
-                for future in futures:
-                    future.result()
+        # with ThreadPoolExecutor(max_workers=6) as executor:
+        #     _ = [executor.submit(self.marker, f) for f in files]
 
     def _resize_img(self, img):
         if img.size[0] > img.size[1]:
@@ -120,7 +113,7 @@ class KokoWaterMark:
 
 def example():
     my_watermarker = KokoWaterMark(
-        path_root=r"H:\200_RAF\20250608",
+        path_root=r"H:\200_RAF\20250607",
         aim_size=1024,
     )
     my_watermarker.run()

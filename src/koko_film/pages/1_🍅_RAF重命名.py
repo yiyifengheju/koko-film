@@ -12,42 +12,83 @@
 """
 
 import os
+from pathlib import Path
 
 import streamlit as st
 
-try:
-    from ..pic_tools import raf_renamer
-    from ..utils.page_init import page_init, page_md
-
-except ImportError:
-    from pic_tools import raf_renamer
-    from utils.page_init import page_init, page_md
+from koko_film.common.base import PathBase
+from koko_film.common.config import config
+from koko_film.raf_tools.raf_archive import raf_archive
+from koko_film.raf_tools.raf_renamer import raf_renamer
+from koko_film.utils.page_init import page_init, page_md
 
 
-def page_main():
-    cols = st.columns([6, 4])
-    with cols[0]:
+def page_main(
+    raf_src,
+    raf_name,
+    aim_model,
+):
+    # 移动、重命名
+    raf_renamer(
+        raf_src,
+        config.APP.RAF_ROOT,
+        aim_model,
+        config.APP.MAX_WORKERS,
+    )
+
+    # 创建toml
+    for folder in Path(config.APP.RAF_ROOT).iterdir():
+        if Path(folder, "Archive.toml").is_file():
+            continue
+        raf_archive(folder, raf_name)
+
+
+def page_compose():
+    col1, col2 = st.columns([6, 4])
+    with col1:
         raf_src = st.text_input(
             "RAF源路径",
             key="raf_src",
         )
-
-        raf_dst = st.text_input(
-            "RAF目标路径",
-            value=r"H:\RAF_TMP",
-            key="raf_dst",
-        )
+        col11, col12 = st.columns(2)
+        with col11:
+            raf_dst = st.text_input(
+                "RAF目标路径",
+                value=config.APP.RAF_ROOT,
+                key="raf_dst",
+                disabled=True,
+            )
+        with col12:
+            raf_name = st.text_input(
+                "相册名",
+                value="",
+                key="raf_name",
+            )
         aim_model = st.selectbox(
-            "目标相机Model",
-            options=["", "X-T50", "X100VI", "X-T5", "X-H2", "X-H2s", "X-S20", "X-T30II", "X-E4"],
+            "修改相机型号",
+            options=[
+                "",
+                "X-T50",
+                "X100VI",
+                "X-T5",
+                "X-H2",
+                "X-H2s",
+                "X-S20",
+                "X-T30II",
+                "X-E4",
+            ],
             index=0,
         )
 
         col11, col12, _, _ = st.columns(4)
         with col11:
-            if st.button("重命名RAF", key="raf_btn") and raf_src and raf_dst:
+            if st.button("重命名RAF", key="raf_btn") and raf_src:
                 with st.spinner("等待进程..."):
-                    raf_renamer(raf_src, raf_dst, aim_model)
+                    page_main(
+                        raf_src,
+                        raf_name,
+                        aim_model,
+                    )
                     st.success("重命名完成！")
         with col12:
             if st.button("打开文件路径"):
@@ -65,4 +106,4 @@ def page_main():
 
 if __name__ == "__main__":
     page_init("RAF重命名", "🍅")
-    page_main()
+    page_compose()

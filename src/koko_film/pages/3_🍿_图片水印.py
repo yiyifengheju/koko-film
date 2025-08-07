@@ -11,24 +11,28 @@
 =========================================================================
 """
 
-import os
-from pathlib import Path
-
 import streamlit as st
 
-try:
-    from ..config import CONFIG
-    from ..pic_tools import KokoWaterMark
-    from ..utils.page_init import page_init, page_md
-
-
-except ImportError:
-    from config import CONFIG
-    from pic_tools import KokoWaterMark
-    from utils.page_init import page_init, page_md
+from koko_film.koko_marker import KokoWaterMark
+from koko_film.utils.page_init import page_init, page_md
 
 
 def page_main():
+    options = ["MARK_0", "MARK_1", "MARK_2", "MARK_3", "MARK_4", "MARK_5", "MARK_CONAN"]
+    select_style = st.segmented_control(
+        "水印样式",
+        options,
+        selection_mode="multi",
+        default=[
+            "MARK_0",
+            "MARK_1",
+            "MARK_2",
+            "MARK_3",
+            "MARK_4",
+            "MARK_5",
+            "MARK_CONAN",
+        ],
+    )
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         limit_size = st.text_input(
@@ -43,28 +47,8 @@ def page_main():
             key="limit_width",
             value="2560",
         )
-    with col3:
-        style_idx = st.selectbox(
-            "水印样式",
-            ("MARK_0", "MARK_1", "MARK_2", "MARK_3", "MARK_4"),
-            index=1,
-            key="style_idx",
-        )
-    with col4:
-        cam_make = st.selectbox(
-            "相机品牌",
-            ("FujiFilm", "SONY"),
-            index=0,
-            key="cam_make",
-        )
-    with col5:
-        max_workers = st.selectbox(
-            "工作核心数",
-            (str(CONFIG.MAX_WORKERS), str(CONFIG.MAX_WORKERS // 2), str(CONFIG.MAX_WORKERS // 4)),
-            index=0,
-            key="max_workers",
-        )
-    col1, col2 = st.columns(2)
+
+    col1, col2, _ = st.columns(3)
     with col1:
         img_src = st.text_input(
             "图片路径",
@@ -72,44 +56,37 @@ def page_main():
         )
 
     if st.button("生成水印", key="img_btn") and img_src:
-        tmp = Path(img_src, os.pardir).absolute()
-        folder_name = img_src.split("/")[-1]
-        img_dst = f"{tmp}/{folder_name}_MARKER"
-        if not Path(img_dst).exists():
-            Path(img_dst).mkdir(parents=True, exist_ok=True)
-
-        with st.spinner("等待进程..."):
+        with st.spinner("等待进程...", show_time=True):
             wm = KokoWaterMark(
-                path_src=img_src,
-                path_dst=img_dst,
-                aim_size=eval(limit_size),
-                aim_width=eval(limit_width),
-                watermark_style=eval(style_idx),
-                camera_make=cam_make,
-                init_info=None,
-                max_workers=eval(max_workers),
+                path_root=img_src,
+                select_style=select_style,
+                aim_width=int(limit_width),
+                aim_size=int(limit_size),
             )
-            # info = wm.run()
             wm.run()
-            info = ""
-            st.success("压缩完成！")
+            info = wm.webp_report()
+            st.success("添加水印完成！")
             with st.expander("压缩信息"):
                 st.write(info)
 
+
+def page_ref():
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.image("./sources/DSCF9285.webp", caption="样式 0")
+        st.image("./common/sources/images/DSCF9285.webp", caption="样式 0")
     with col2:
-        st.image("./sources/DSCF9304.webp", caption="样式 1")
+        st.image("./common/sources/images/DSCF9304.webp", caption="样式 1")
     with col3:
-        st.image("./sources/DSCF9302.webp", caption="样式 2")
+        st.image("./common/sources/images/DSCF9302.webp", caption="样式 2")
     with col4:
-        st.image("./sources/DSCF9307.webp", caption="样式 3")
+        st.image("./common/sources/images/DSCF9307.webp", caption="样式 3")
 
 
 if __name__ == "__main__":
     page_init("图片水印", "🍿")
     page_main()
+
+    page_ref()
 
     contents = [
         "### 实现说明",

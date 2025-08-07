@@ -118,4 +118,3 @@ class CONFIG(BaseModel):
 config = CONFIG.from_toml()
 config.APP.CALLER_STACK = os.environ.get("CALLER_STACK")
 spinner_type = {"interval": 80, "frames": ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"]}
-

@@ -13,7 +13,7 @@
 
 from PIL import Image, ImageDraw, ImageFont
 
-from koko_film.common.base import ArchImages
+from koko_film.common.base import DictImages
 from koko_film.common.config import config
 
 
@@ -29,7 +29,7 @@ class PARAM:
 
 
 def sub_marker_conan(
-    marker_exif: ArchImages,
+    marker_exif: DictImages,
     image: Image,
     w: int,
     h: int,

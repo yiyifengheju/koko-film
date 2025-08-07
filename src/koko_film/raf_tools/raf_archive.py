@@ -14,31 +14,30 @@
 import subprocess
 from dataclasses import asdict
 from datetime import datetime
+from functools import lru_cache
 from pathlib import Path
 
+import chardet
 import toml
 
 from koko_film.common.base import (
-    ArchImages,
-    PathArchiveCls,
-    Arch,
-    ArchSummary,
-    ArchSync,
+    ArchToml,
+    DictImages,
+    DictSummary,
+    DictSync,
+    PathBase,
+    koko_print,
 )
-from koko_film.common.base import koko_print
 from koko_film.common.config import config
 
 
-def get_exif(img_path: Path) -> ArchImages:
+@lru_cache(maxsize=128)
+def get_exif(img_path: Path) -> DictImages:
     cmd = [config.BIN.EXIFTOOL, img_path]
     try:
-        result = subprocess.check_output(
-            cmd,
-            shell=True,
-            cwd="./",
-            text=False,
-            encoding="utf-8",
-        )
+        raw = subprocess.check_output(cmd, shell=True, cwd="./")
+        encoding = chardet.detect(raw)["encoding"]
+        result = raw.decode(encoding or "utf-8", errors="ignore")
         result.strip()
     except subprocess.CalledProcessError as e:
         koko_print(str(e))
@@ -52,13 +51,14 @@ def get_exif(img_path: Path) -> ArchImages:
             continue
     date_format = "%Y:%m:%d %H:%M:%S"
 
-    return ArchImages(
+    return DictImages(
         FILENAME=tags["File Name"].split(".")[0],
         SHOT_TIME=datetime.strptime(
-            tags["Date/Time Original"].replace("+08:00", ""), date_format
+            tags["Date/Time Original"].replace("+08:00", ""),
+            date_format,
         ).strftime("%Y.%m.%d %H:%M:%S"),
-        INIT_SIZE=int(tags["File Size"].replace(" MB", "")) * 1024,
-        ARTIST=tags["Artist"] if "Artist" in tags else "ARTMALLO",
+        INIT_SIZE=int(float(tags["File Size"].replace(" MB", "")) * 1024),
+        ARTIST=tags.get("Artist", "ARTMALLO"),
         WIDTH=int(tags["Image Width"]),
         HEIGHT=int(tags["Image Height"]),
         FOCAL_LENGTH=tags["Focal Length In 35mm Format"],
@@ -75,16 +75,27 @@ def get_exif(img_path: Path) -> ArchImages:
     )
 
 
-def raf_archive(path_root: str):
-    if Path(path_root).is_dir():
-        path_cls = PathArchiveCls(path_root)
-    elif Path(config.APP.RAF_ROOT, path_root).is_dir():
-        path_cls = PathArchiveCls(Path(config.APP.RAF_ROOT, path_root))
+def raf_archive(
+    path_root: str | Path | PathBase,
+    raf_name: str,
+) -> None:
+    if isinstance(path_root, PathBase):
+        path_cls = path_root
+    elif isinstance(path_root, Path):
+        path_cls = PathBase(Path(config.APP.RAF_ROOT, path_root))
+    elif isinstance(path_root, str) and Path(path_root).is_dir():
+        path_cls = PathBase(path_root)
+    elif isinstance(path_root, str) and Path(config.APP.RAF_ROOT, path_root).is_dir():
+        path_cls = PathBase(Path(config.APP.RAF_ROOT, path_root))
     else:
         raise TypeError("输入路径格式错误")
-    arch_info = Arch(
-        SUMMARY=ArchSummary(DATE=path_cls.root.name),
-        SYNC=ArchSync(),
+    path_cls.init_dirs()
+    arch_info = ArchToml(
+        SUMMARY=DictSummary(
+            ALBUM=raf_name,
+            DATE=path_cls.root.name,
+        ),
+        SYNC=DictSync(),
         IMAGES={},
     )
 
@@ -95,6 +106,7 @@ def raf_archive(path_root: str):
     # spinner.start()
     for file in path_cls.raf.iterdir():
         if file.suffix == ".RAF":
+            print(file)
             info = get_exif(file)
             cams.append(info.CAM_MODEL)
             lens.append(info.LENS_MODEL)
@@ -127,6 +139,6 @@ def raf_archive(path_root: str):
 if __name__ == "__main__":
     PATH_RAF = Path(r"H:\200_RAF")
     for path in PATH_RAF.iterdir():
-        path = r"H:\200_RAF\20250502"
+        path = r"H:\DAOCHU\20230513"
         raf_archive(path)
         assert 0

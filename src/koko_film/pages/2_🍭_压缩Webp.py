@@ -16,15 +16,9 @@ from pathlib import Path
 
 import streamlit as st
 
-try:
-    from ..config import CONFIG
-    from ..pic_tools import compress_cover, compress_webp
-    from ..utils.page_init import page_init, page_md
-
-except ImportError:
-    from config import CONFIG
-    from pic_tools import compress_cover, compress_webp
-    from utils.page_init import page_init, page_md
+from koko_film.common.config import config
+from koko_film.pic_tools import compress_cover, compress_webp
+from koko_film.utils.page_init import page_init, page_md
 
 
 def get_compress_info(path_src, path_dst, pre):
@@ -62,7 +56,11 @@ def page_main_1():
     with col3:
         max_workers = st.selectbox(
             "工作核心数",
-            (str(CONFIG.MAX_WORKERS), str(CONFIG.MAX_WORKERS // 2), str(CONFIG.MAX_WORKERS // 4)),
+            (
+                str(config.APP.MAX_WORKERS),
+                str(config.APP.MAX_WORKERS // 2),
+                str(config.APP.MAX_WORKERS // 4),
+            ),
             index=0,
             key="max_workers",
         )
@@ -123,7 +121,11 @@ def page_main_2():
     with col4:
         max_workers_2 = st.selectbox(
             "工作核心数",
-            (str(CONFIG.MAX_WORKERS), str(CONFIG.MAX_WORKERS // 2), str(CONFIG.MAX_WORKERS // 4)),
+            (
+                str(config.APP.MAX_WORKERS),
+                str(config.APP.MAX_WORKERS // 2),
+                str(config.APP.MAX_WORKERS // 4),
+            ),
             index=0,
             key="max_workers_2",
         )

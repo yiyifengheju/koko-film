@@ -14,10 +14,13 @@
 import os
 from dataclasses import dataclass
 from pathlib import Path
+from koko_film.common.config import config
+import toml
 
 
 @dataclass
-class ArchSummary:
+class DictSummary:
+    ALBUM: str = ""
     DATE: str = ""
     CAM_MODEL: str | list[str] = ""
     LENS_MODEL: str | list[str] = ""
@@ -32,14 +35,14 @@ class ArchSummary:
 
 
 @dataclass
-class ArchSync:
+class DictSync:
     NAS_SYNC: bool = False
     NAS_PATH: str = ""
     SYNC_DATE: str = ""
 
 
 @dataclass
-class ArchImages:
+class DictImages:
     FILENAME: str = ""
     SHOT_TIME: str = ""
     INIT_SIZE: int = ""
@@ -60,23 +63,28 @@ class ArchImages:
 
 
 @dataclass
-class Arch:
-    SUMMARY: ArchSummary
-    SYNC: ArchSync
-    IMAGES: dict[str, "ArchImages"]
+class ArchToml:
+    SUMMARY: DictSummary
+    SYNC: DictSync
+    IMAGES: dict[str, "DictImages"]
 
 
-class PathArchiveCls:
+class PathBase:
     def __init__(self, root: str | Path):
-        self.root = Path(root)
-        self.toml = Path(root, "Archive.toml")
-        self.raf = Path(root, "RAF")
-        self.jpg = Path(root, "JPG")
-        self.webp = Path(root, "WEBP")
+        self.root = Path(config.APP.RAF_ROOT, root)
+        self.toml = Path(config.APP.RAF_ROOT, root, "Archive.toml")
+        self.raf = Path(config.APP.RAF_ROOT, root, "RAF")
+        self.jpg = Path(config.APP.RAF_ROOT, root, "JPG")
+        self.webp = Path(config.APP.RAF_ROOT, root, "WEBP")
+
+    def init_dirs(self):
         for item in [self.raf, self.jpg, self.webp]:
             item.mkdir(parents=True, exist_ok=True)
-        if not self.toml.exists():
-            self.toml.touch(exist_ok=True)
+        self.toml.touch(exist_ok=True)
+
+    def update_toml(self, arch_toml):
+        with self.toml.open(mode="w", encoding="utf-8") as f:
+            toml.dump(f, arch_toml)
 
 
 def koko_print(

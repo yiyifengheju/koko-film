@@ -10,3 +10,9 @@
 -
 =========================================================================
 """
+
+from .watermarker import KokoWaterMark
+
+__all__ = [
+    "KokoWaterMark",
+]

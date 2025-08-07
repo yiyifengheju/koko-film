@@ -13,7 +13,7 @@
 
 from PIL import Image, ImageFilter
 
-from koko_film.common.base import ArchImages
+from koko_film.common.base import DictImages
 from koko_film.common.config import config
 from koko_film.koko_marker.base import generate_border
 
@@ -32,7 +32,7 @@ class PARAM:
 
 
 def sub_marker_3(
-    marker_exif: ArchImages,
+    marker_exif: DictImages,
     image: Image,
     w: int,
     h: int,

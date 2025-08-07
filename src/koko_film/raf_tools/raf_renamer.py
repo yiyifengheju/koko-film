@@ -20,6 +20,8 @@ import tqdm
 
 from koko_film.common.config import config
 
+__all__ = ["raf_renamer"]
+
 bin_exiftool = Path(config.BIN.EXIFTOOL).absolute()
 
 
@@ -37,28 +39,33 @@ def run_cmd(cmd, cwd):
         print(e)
 
 
-def run(file, path_src, path_dst, aim_model):
+def run(
+    file,
+    path_src,
+    path_dst,
+    aim_model="",
+):
     raf_path = Path(path_src, file).absolute()
     # fmt: off
     if aim_model:
         cmd = (f'{bin_exiftool} '
                f'"-Model={aim_model}" '
                # f'"-Software=Digital Camera {aim_model} Ver1.00" '
-               f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/%Y%m%d_%%f.%%e" '
+               f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/RAF/%Y%m%d_%%f.%%e" '
                f'"{raf_path}"')
     else:
         cmd = (f'{bin_exiftool} '
-               f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/%Y%m%d_%%f.%%e" '
+               f'"-FileName<CreateDate" -d "{path_dst}/%Y%m%d/RAF/%Y%m%d_%%f.%%e" '
                f'"{raf_path}"')
     # fmt: on
     run_cmd(cmd, "./")
 
 
 def raf_renamer(
-    path_src: str,
-    path_dst: str,
-    aim_model: str,
-    max_workers: int = config.APP.MAX_WORKERS,
+    path_src: str | Path,
+    path_dst: str | Path,
+    aim_model: str = "",
+    max_workers: int = 8,
 ) -> None:
     """RAF文件重命名和归档
 
@@ -87,7 +94,7 @@ def raf_renamer(
 
     with ThreadPoolExecutor(max_workers=max_workers) as t:
         futures = [
-            t.submit(run, file, path_src, path_dst, aim_model)
+            t.submit(run, file, path_src, path_dst, aim_model=aim_model)
             for file in files
             if file != "Desktop.ini"
         ]
