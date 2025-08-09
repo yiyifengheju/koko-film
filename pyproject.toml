@@ -16,6 +16,7 @@ dependencies = [
     "halo>=0.0.31",
     "typer>=0.16.0",
     "streamlit>=1.46.0",
+    "chardet>=5.2.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

@@ -23,6 +23,8 @@ cachetools==6.1.0
     # via streamlit
 certifi==2025.6.15
     # via requests
+chardet==5.2.0
+    # via koko-film
 charset-normalizer==3.4.2
     # via requests
 click==8.2.1
